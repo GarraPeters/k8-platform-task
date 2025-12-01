@@ -1,0 +1,25 @@
+---
+# Priority classes ensure critical workloads get scheduled first
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: system-critical
+value: 1000000000
+globalDefault: false
+description: "System critical workloads"
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: high-priority
+value: 100000
+globalDefault: false
+description: "High priority application workloads"
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: default-priority
+value: 1000
+globalDefault: true
+description: "Default priority workloads"

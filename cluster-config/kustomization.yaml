@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - 00-namespace.yaml
+  - 01-rbac.yaml
+  - 02-resource-quotas.yaml
+  - 03-network-policies.yaml
+  - 04-priority-classes.yaml
+
+commonLabels:
+  managed-by: flux
+  environment: production

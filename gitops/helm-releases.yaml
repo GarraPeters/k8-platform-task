@@ -1,0 +1,69 @@
+---
+# Flux CD HelmRelease for Prometheus
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: prometheus
+  namespace: observability
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: prometheus
+      sourceRef:
+        kind: HelmRepository
+        name: prometheus-community
+        namespace: observability
+  values:
+    prometheus:
+      enabled: true
+      prometheusSpec:
+        retention: 30d
+        storageSpec:
+          volumeClaimTemplate:
+            spec:
+              resources:
+                requests:
+                  storage: 10Gi
+---
+# Flux CD HelmRelease for Grafana
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: grafana
+  namespace: observability
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: grafana
+      sourceRef:
+        kind: HelmRepository
+        name: grafana
+        namespace: observability
+  values:
+    adminPassword: admin
+    persistence:
+      enabled: true
+      size: 5Gi
+---
+# Flux CD HelmRelease for Loki
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: loki
+  namespace: observability
+spec:
+  interval: 1h
+  chart:
+    spec:
+      chart: loki-stack
+      sourceRef:
+        kind: HelmRepository
+        name: grafana
+        namespace: observability
+  values:
+    loki:
+      enabled: true
+    promtail:
+      enabled: true

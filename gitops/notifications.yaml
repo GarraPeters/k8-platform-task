@@ -1,0 +1,28 @@
+---
+# Notification Provider for GitHub
+apiVersion: notification.toolkit.fluxcd.io/v1beta1
+kind: Provider
+metadata:
+  name: github
+  namespace: flux-system
+spec:
+  type: github
+  # address: https://github.com/PLACEHOLDER-ORG/platform-config
+  secretRef:
+    name: github-token
+---
+# Alert for failed reconciliations
+apiVersion: notification.toolkit.fluxcd.io/v1beta1
+kind: Alert
+metadata:
+  name: deployment-alerts
+  namespace: flux-system
+spec:
+  providerRef:
+    name: github
+  eventSeverity: error
+  eventSources:
+    - kind: Kustomization
+    - kind: HelmRelease
+    - kind: ImageUpdateAutomation
+  suspend: false

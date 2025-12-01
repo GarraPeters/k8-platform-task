@@ -1,0 +1,10 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - api-server/k8s/deployment.yaml
+  - api-server/k8s/scaling.yaml
+
+commonLabels:
+  managed-by: flux
+  environment: production

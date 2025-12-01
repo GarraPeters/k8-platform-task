@@ -1,0 +1,48 @@
+---
+# Flux CD Image Repository for automated image updates
+apiVersion: image.toolkit.fluxcd.io/v1beta1
+kind: ImageRepository
+metadata:
+  name: api-server
+  namespace: flux-system
+spec:
+  # image: PLACEHOLDER-REGISTERY/api-server  # Update this
+  interval: 5m
+---
+# Flux CD Image Policy for semantic versioning
+apiVersion: image.toolkit.fluxcd.io/v1beta1
+kind: ImagePolicy
+metadata:
+  name: api-server
+  namespace: flux-system
+spec:
+  imageRepositoryRef:
+    name: api-server
+  policy:
+    semver:
+      range: '1.x'
+---
+apiVersion: image.toolkit.fluxcd.io/v1beta1
+kind: ImageUpdateAutomation
+metadata:
+  name: flux-system
+  namespace: flux-system
+spec:
+  interval: 1h
+  sourceRef:
+    kind: GitRepository
+    name: platform-config
+  git:
+    checkout:
+      ref:
+        branch: main
+    commit:
+      author:
+        email: flux@platform.local
+        name: Flux CD
+      messageTemplate: 'ci: update image {{ range .Updated.Containers }}{{ .Image }}{{ end }}'
+    push:
+      branch: main
+  update:
+    path: ./apps
+    strategy: Setters
